@@ -1142,7 +1142,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                         data.extend(size=self.params.lookahead)
                     data._start()
                     if self._dopreload:
-                        data.preload()
+                        await data.preload()
 
             pool = multiprocessing.Pool(self.p.maxcpus or None)
             for r in pool.imap(self, iterstrats):
@@ -1214,7 +1214,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                     data.extend(size=self.params.lookahead)
                 data._start()
                 if self._dopreload:
-                    data.preload()
+                    await data.preload()
 
         for stratcls, sargs, skwargs in iterstrat:
             sargs = self.datas + list(sargs)

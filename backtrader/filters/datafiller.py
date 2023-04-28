@@ -63,18 +63,18 @@ class DataFiller(AbstractDataBase):
         self._fillbars = collections.deque()
         self._dbar = False
 
-    def preload(self):
+    async def preload(self):
         if len(self.p.dataname) == self.p.dataname.buflen():
             # if data is not preloaded .... do it
             self.p.dataname.start()
-            self.p.dataname.preload()
+            await self.p.dataname.preload()
             self.p.dataname.home()
 
         # Copy timeframe from data after start (some sources do autodetection)
         self.p.timeframe = self._timeframe = self.p.dataname._timeframe
         self.p.compression = self._compression = self.p.dataname._compression
 
-        super(DataFiller, self).preload()
+        await super(DataFiller, self).preload()
 
     def _copyfromdata(self):
         # Data is allowed - Copy size which is "number of lines"
@@ -107,7 +107,7 @@ class DataFiller(AbstractDataBase):
         TimeFrame.MicroSeconds: timedelta(microseconds=1),
     }
 
-    def _load(self):
+    async def _load(self):
         if not len(self.p.dataname):
             self.p.dataname.start()  # start data if not done somewhere else
 

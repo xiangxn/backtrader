@@ -435,8 +435,8 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
         # tell the world there is a bar (either the new or the previous
         return True
 
-    def preload(self):
-        while self.load():
+    async def preload(self):
+        while await self.load():
             pass
 
         self._last()
@@ -685,8 +685,8 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
             self.f.close()
             self.f = None
 
-    def preload(self):
-        while self.load():
+    async def preload(self):
+        while await self.load():
             pass
 
         self._last()
@@ -696,7 +696,7 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
         self.f.close()
         self.f = None
 
-    def _load(self):
+    async def _load(self):
         if self.f is None:
             return False
 
@@ -775,13 +775,13 @@ class DataClone(AbstractDataBase):
         self._dlen = 0
         self._preloading = False
 
-    def preload(self):
+    async def preload(self):
         self._preloading = True
-        super(DataClone, self).preload()
+        await super(DataClone, self).preload()
         self.data.home()  # preloading data was pushed forward
         self._preloading = False
 
-    def _load(self):
+    async def _load(self):
         # assumption: the data is in the system
         # simply copy the lines
         if self._preloading:
