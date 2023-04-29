@@ -199,8 +199,8 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
 
         self._started = True
 
-    def _start(self):
-        self.start()
+    async def _start(self):
+        await self.start()
 
         if not self._started:
             self._start_finish()
@@ -299,7 +299,7 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
         for line in self.lines:
             line.qbuffer(savemem=savemem, extrasize=extrasize)
 
-    def start(self):
+    async def start(self):
         self._barstack = collections.deque()
         self._barstash = collections.deque()
         self._laststatus = self.CONNECTED
@@ -397,14 +397,14 @@ class AbstractDataBase(with_metaclass(MetaAbstractDataBase,
             if ticks:
                 self._tick_fill()
 
-    def next(self, datamaster=None, ticks=True):
+    async def next(self, datamaster=None, ticks=True):
 
         if len(self) >= self.buflen():
             if ticks:
                 self._tick_nullify()
 
             # not preloaded - request next bar
-            ret = self.load()
+            ret = await self.load()
             if not ret:
                 # if load cannot produce bars - forward the result
                 return ret
@@ -606,9 +606,9 @@ class FeedBase(with_metaclass(metabase.MetaParams, object)):
     def __init__(self):
         self.datas = list()
 
-    def start(self):
+    async def start(self):
         for data in self.datas:
-            data.start()
+            await data.start()
 
     def stop(self):
         for data in self.datas:
@@ -664,8 +664,8 @@ class CSVDataBase(with_metaclass(MetaCSVDataBase, DataBase)):
     f = None
     params = (('headers', True), ('separator', ','),)
 
-    def start(self):
-        super(CSVDataBase, self).start()
+    async def start(self):
+        await super(CSVDataBase, self).start()
 
         if self.f is None:
             if hasattr(self.p.dataname, 'readline'):
@@ -749,9 +749,9 @@ class DataClone(AbstractDataBase):
         self.p.timeframe = self.data.p.timeframe
         self.p.compression = self.data.p.compression
 
-    def _start(self):
+    async def _start(self):
         # redefine to copy data bits from guest data
-        self.start()
+        await self.start()
 
         # Copy tz infos
         self._tz = self.data._tz
@@ -770,8 +770,8 @@ class DataClone(AbstractDataBase):
         self.sessionstart = self.data.sessionstart
         self.sessionend = self.data.sessionend
 
-    def start(self):
-        super(DataClone, self).start()
+    async def start(self):
+        await super(DataClone, self).start()
         self._dlen = 0
         self._preloading = False
 

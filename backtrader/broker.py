@@ -162,7 +162,7 @@ class BrokerBase(with_metaclass(MetaBroker, object)):
 
         raise NotImplementedError
 
-    def next(self):
+    async def next(self):
         pass
 
 # __all__ = ['BrokerBase', 'fillers', 'filler']
