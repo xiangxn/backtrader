@@ -1173,7 +1173,7 @@ class BackBroker(bt.BrokerBase):
                 # update to next potential order
                 uhist[0] = uhorder = next(uhorders, None)
 
-    def next(self):
+    async def next(self):
         while self._toactivate:
             self._toactivate.popleft().activate()
 
