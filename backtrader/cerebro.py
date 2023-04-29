@@ -1293,9 +1293,9 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
             if self._dopreload and self._dorunonce:
                 if self.p.oldsync:
-                    self._runonce_old(runstrats)
+                    await self._runonce_old(runstrats)
                 else:
-                    self._runonce(runstrats)
+                    await self._runonce(runstrats)
             else:
                 if self.p.oldsync:
                     await self._runnext_old(runstrats)
@@ -1691,7 +1691,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                     if self._event_stop:  # stop if requested
                         return
 
-            self._brokernotify()
+            await self._brokernotify()
             if self._event_stop:  # stop if requested
                 return
 
